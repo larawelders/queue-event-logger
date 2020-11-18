@@ -1,0 +1,14 @@
+{
+    "name": "larawelders/queue-event-logger",
+    "type": "library",
+    "description": "Log all details of queue events",
+    "license": "MIT",
+    "require": {
+        "php": "^7.1",
+        "laravel/framework": "^6.0 || ^7.0 || ^8.0"
+    },
+    "require-dev": {
+        "nunomaduro/larastan": "^0.6.9",
+        "orchestra/testbench": "^6.4"
+    }
+}
