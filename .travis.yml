@@ -72,7 +72,8 @@ before_install:
   - "composer validate --strict"
 
 install:
-  - "composer update 'laravel/laravel:^${LARAVERSION}'"
+  - |
+    composer update "laravel/laravel:^${LARAVERSION}"
 
 script:
   - "composer run-script test"
