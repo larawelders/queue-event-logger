@@ -19,7 +19,7 @@ php:
   - "7.2"
   - "8.0snapshot"
 env:
-  - "LARAVESION=8.0"
+  - "LARAVERSION=8.0"
   - "LARAVERSION=7.0"
   - "LARAVERSION=6.0"
 
@@ -59,6 +59,13 @@ jobs:
         - |
           test -z "$(find . -type f -not -path "./.git/*" -executable)"
       after_script: "skip"
+  exclude:
+    - php: "8.0snapshot"
+      env: "LARAVERSION=7.0"
+    - php: "8.0snapshot"
+      env: "LARAVERSION=6.0"
+    - php: "7.2"
+      env: "LARAVERSION=8.0"
 
 before_install:
   - "phpenv config-rm xdebug.ini"
