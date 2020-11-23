@@ -73,7 +73,7 @@ before_install:
 
 install:
   - |
-    composer update "laravel/laravel:^${LARAVERSION}"
+    composer update --with="laravel/laravel:^${LARAVERSION}"
 
 script:
   - "composer run-script test"
