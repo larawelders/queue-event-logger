@@ -1,1 +1,0 @@
-C:37:"PHPUnit\Runner\DefaultTestResultCache":242:{a:2:{s:7:"defects";a:1:{s:85:"Larawelders\QueueEventLogger\Tests\Feature\QueueEventLoggerTest::it_logs_queue_events";i:4;}s:5:"times";a:1:{s:85:"Larawelders\QueueEventLogger\Tests\Feature\QueueEventLoggerTest::it_logs_queue_events";d:0.102;}}}

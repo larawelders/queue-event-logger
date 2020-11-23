@@ -22,5 +22,17 @@
         "psr-4": {
             "Larawelders\\QueueEventLogger\\Tests\\": "tests/"
         }
-    }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Larawelders\\QueueEventLogger\\QueueEventLoggerServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
