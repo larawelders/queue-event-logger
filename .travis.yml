@@ -16,7 +16,6 @@ stages:
 php:
   - "7.4"
   - "7.3"
-  - "7.2"
   - "8.0snapshot"
 env:
   - "LARAVERSION=8.0"
@@ -59,13 +58,23 @@ jobs:
         - |
           test -z "$(find . -type f -not -path "./.git/*" -executable)"
       after_script: "skip"
+
+    - stage: "test"
+      php: "7.2"
+      install: |
+        composer update --with="laravel/laravel:^7.0" --with="phpunit/phpunit:^8.0"
+      script: "composer run-script test -- --configuration phpunit8.xml"
+
+    - stage: "test"
+      php: "7.2"
+      install: |
+        composer update --with="laravel/laravel:^6.0" --with="phpunit/phpunit:^8.0"
+      script: "composer run-script test -- --configuration phpunit8.xml"
   exclude:
     - php: "8.0snapshot"
       env: "LARAVERSION=7.0"
     - php: "8.0snapshot"
       env: "LARAVERSION=6.0"
-    - php: "7.2"
-      env: "LARAVERSION=8.0"
 
 before_install:
   - "phpenv config-rm xdebug.ini"
