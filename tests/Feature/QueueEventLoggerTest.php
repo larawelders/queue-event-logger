@@ -21,7 +21,7 @@ class QueueEventLoggerTest extends TestCase
         );
 
         Log::shouldReceive('queue')->with(
-            '[test-job] Uncaught exception Exception in job Larawelders\\QueueEventLogger\\Tests\\Feature\\TestJob: TestJob failed',
+            '[test-job] Uncaught exception Exception in job Larawelders\\QueueEventLogger\\Tests\\Feature\\TestJob: TestJob failed'
         );
     }
 }
