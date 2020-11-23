@@ -19,9 +19,9 @@ php:
   - "8.0snapshot"
 env:
   jobs:
-    - "LARAVERSION=8.0"
-    - "LARAVERSION=7.0"
-    - "LARAVERSION=6.0"
+    - LARAVERSION: "8.0"
+    - LARAVERSION: "7.0"
+    - LARAVERSION: "6.0"
 
 cache:
   directories:
@@ -62,12 +62,14 @@ jobs:
 
     - stage: "test"
       php: "7.2"
+      env:
       install: |
         composer update --with="laravel/laravel:^7.0" --with="phpunit/phpunit:^8.0"
       script: "composer run-script test -- --configuration phpunit8.xml"
 
     - stage: "test"
       php: "7.2"
+      env:
       install: |
         composer update --with="laravel/laravel:^6.0" --with="phpunit/phpunit:^8.0"
       script: "composer run-script test -- --configuration phpunit8.xml"
