@@ -21,7 +21,7 @@ class QueueEventLoggerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Event::listen(JobExceptionOccurred::class, static function (JobExceptionOccurred $event) {
+        Event::listen(JobExceptionOccurred::class, static function (JobExceptionOccurred $event): void {
             Log::channel('queue')->error(
                 sprintf(
                     '[%s] Uncaught exception %s in job %s: %s%s',
