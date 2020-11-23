@@ -1,2 +1,18 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE and local environment
+/.vscode/
+/.vagrant/
+# JetBrains IDEs
+/.idea/
+
+# Packages
 /composer.lock
 /vendor/
+
+# Tests
+/build/
+.php_cs.cache
+.phpunit.result.cache

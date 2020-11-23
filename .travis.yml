@@ -1,0 +1,71 @@
+# TravisCI configuration for username/projectname
+
+
+# Larawelders don't ride the hype train: We use Travis CI.
+
+
+language: "php"
+os:
+  - "linux"
+dist: "bionic"
+
+stages:
+  - "commits"
+  - "test"
+
+php:
+  - "7.4"
+  - "7.3"
+  - "7.2"
+  - "8.0snapshot"
+env:
+  - "LARAVESION=8.0"
+  - "LARAVERSION=7.0"
+  - "LARAVERSION=6.0"
+
+cache:
+  directories:
+    - "${HOME}/.composer/cache"
+
+jobs:
+  include:
+    - stage: "commits"
+      name: "Check committers have a GitHub account"
+      before_install: "skip"
+      install: "skip"
+      before_script: "skip"
+      script:
+        - |
+          Check_author()
+          {
+            local author="$1"
+            local github_api_url="https://api.github.com/search/users"
+            echo "Checking ${author} ..."
+            curl -s -G --data-urlencode "q=type:user in:email ${author}" "${github_api_url}" \
+              | grep -F -x '  "total_count": 1,'
+          }
+          git show --no-patch --pretty="format:%ae" "${TRAVIS_COMMIT_RANGE}" \
+            | sort -u \
+            | while read -r author; do Check_author "${author}"; done
+      after_script: "skip"
+
+    - stage: "commits"
+      name: "Check file execution bits"
+      before_install: "skip"
+      install: "skip"
+      before_script: "skip"
+      script:
+        # No file should be executable
+        - |
+          test -z "$(find . -type f -not -path "./.git/*" -executable)"
+      after_script: "skip"
+
+before_install:
+  - "phpenv config-rm xdebug.ini"
+  - "composer validate --strict"
+
+install:
+  - "composer update 'laravel/laravel:^${LARAVERSION}'"
+
+script:
+  - "composer run-script test"
