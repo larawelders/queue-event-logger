@@ -1,0 +1,74 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: "8.2"
+            testbench: "^10.13"
+            suite: "laravel-12"
+          - php: "8.3"
+            testbench: "^10.13"
+            suite: "laravel-12"
+          - php: "8.3"
+            testbench: "^11.1"
+            suite: "laravel-13"
+          - php: "8.4"
+            testbench: "^11.1"
+            suite: "laravel-13"
+          - php: "8.5"
+            testbench: "^11.1"
+            suite: "laravel-13"
+
+    name: PHP ${{ matrix.php }} / ${{ matrix.suite }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+          composer-options: --no-interaction --no-progress --prefer-dist
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Align Testbench version
+        run: composer update orchestra/testbench --with="orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-progress --prefer-dist
+
+      - name: Run test suite
+        run: composer test
+
+  analyse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+          composer-options: --no-interaction --no-progress --prefer-dist
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Run static analysis
+        run: composer analyse

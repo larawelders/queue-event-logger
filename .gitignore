@@ -1,13 +1,3 @@
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE and local environment
-/.vscode/
-/.vagrant/
-# JetBrains IDEs
-/.idea/
-
 # Packages
 /composer.lock
 /vendor/
@@ -15,4 +5,5 @@ Thumbs.db
 # Tests
 /build/
 .php_cs.cache
-.phpunit.result.cache
+.phpstan.cache
+.phpunit.cache/

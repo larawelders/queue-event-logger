@@ -1,17 +1,19 @@
 {
     "name": "larawelders/queue-event-logger",
     "type": "library",
-    "description": "Log all details of queue events",
+    "description": "Log Laravel queue worker lifecycle events",
     "license": "MIT",
     "require": {
-        "php": "^7.2 || ^8.0",
-        "laravel/framework": "^6.0 || ^7.0 || ^8.0"
+        "php": "^8.2",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/queue": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0"
     },
     "require-dev": {
-        "nunomaduro/larastan": "^0.6.9",
-        "mockery/mockery": "^1.3.1",
-        "phpunit/phpunit": "^8.0 || ^9.0",
-        "laravel/laravel": "^6.0 || ^7.0 || ^8.0"
+        "larastan/larastan": "^3.9",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^10.13 || ^11.1",
+        "phpunit/phpunit": "^11.5 || ^12.0"
     },
     "autoload": {
         "psr-4": {
@@ -30,11 +32,12 @@
             ]
         },
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "2.0-dev"
         }
     },
     "prefer-stable": true,
     "scripts": {
-        "test": "phpunit --verbose"
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/phpunit"
     }
 }
