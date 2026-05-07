@@ -12,24 +12,12 @@ jobs:
       matrix:
         include:
           - php: "8.2"
-            testbench: "^10.11"
-            phpunit: "^11.5"
             suite: "laravel-12"
           - php: "8.3"
-            testbench: "^10.11"
-            phpunit: "^11.5"
-            suite: "laravel-12"
-          - php: "8.3"
-            testbench: "^11.1"
-            phpunit: "^12.0"
             suite: "laravel-13"
           - php: "8.4"
-            testbench: "^11.1"
-            phpunit: "^12.0"
             suite: "laravel-13"
           - php: "8.5"
-            testbench: "^11.1"
-            phpunit: "^12.0"
             suite: "laravel-13"
 
     name: PHP ${{ matrix.php }} / ${{ matrix.suite }}
@@ -44,15 +32,6 @@ jobs:
 
       - name: Validate composer.json
         run: composer validate --strict
-
-      - name: Set matrix test constraints
-        run: >
-          composer require
-          --dev
-          --no-update
-          --no-interaction
-          "orchestra/testbench:${{ matrix.testbench }}"
-          "phpunit/phpunit:${{ matrix.phpunit }}"
 
       - uses: ramsey/composer-install@v3
         with:
