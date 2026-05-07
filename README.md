@@ -15,20 +15,20 @@ Notes:
 
 ## What It Logs
 
-- `JobProcessing`
-- `JobProcessed`
-- `JobQueued`
-- `JobExceptionOccurred`
-- `JobReleasedAfterException`
-- `JobFailed`
-- `JobTimedOut`
-- `Looping`
-- `QueueBusy`
-- `QueueFailedOver`
-- `QueuePaused`
-- `QueueResumed`
-- `WorkerStarting`
-- `WorkerStopping`
+- `JobProcessing` at `info`
+- `JobProcessed` at `info`
+- `JobQueued` at `info`
+- `JobExceptionOccurred` at `error`
+- `JobReleasedAfterException` at `warning`
+- `JobFailed` at `error`
+- `JobTimedOut` at `error`
+- `Looping` at `debug`
+- `QueueBusy` at `warning`
+- `QueueFailedOver` at `error`
+- `QueuePaused` at `info`
+- `QueueResumed` at `info`
+- `WorkerStarting` at `info`
+- `WorkerStopping` at `info`
 
 ## Installation
 
