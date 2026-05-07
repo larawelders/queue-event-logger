@@ -12,10 +12,10 @@ jobs:
       matrix:
         include:
           - php: "8.2"
-            testbench: "^10.13"
+            testbench: "^10.11"
             suite: "laravel-12"
           - php: "8.3"
-            testbench: "^10.13"
+            testbench: "^10.11"
             suite: "laravel-12"
           - php: "8.3"
             testbench: "^11.1"

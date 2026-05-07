@@ -120,7 +120,7 @@ class QueueEventLoggerServiceProvider extends ServiceProvider
                 sprintf(
                     '[worker] Queue %s on connection %s is busy with %d pending jobs',
                     $event->queue,
-                    $event->connectionName,
+                    self::formatQueueConnection($event, 'connectionName', 'connection'),
                     $event->size
                 )
             );
@@ -234,5 +234,16 @@ class QueueEventLoggerServiceProvider extends ServiceProvider
         }
 
         return (string) $ttl;
+    }
+
+    private static function formatQueueConnection(object $event, string ...$propertyNames): string
+    {
+        foreach ($propertyNames as $propertyName) {
+            if (property_exists($event, $propertyName) && is_string($event->{$propertyName})) {
+                return $event->{$propertyName};
+            }
+        }
+
+        return 'unknown';
     }
 }
