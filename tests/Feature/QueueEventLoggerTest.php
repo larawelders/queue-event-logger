@@ -32,7 +32,7 @@ class QueueEventLoggerTest extends TestCase
         $this->assertSame('queue', config('queue-event-logger.channel'));
         $this->assertSame(
             [
-                'driver' => 'single',
+                'driver' => 'daily',
                 'path' => storage_path('logs/queue.log'),
                 'level' => 'debug',
             ],

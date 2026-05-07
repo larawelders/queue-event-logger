@@ -6,7 +6,7 @@ return [
     'channel' => 'queue',
 
     'channel_config' => [
-        'driver' => 'single',
+        'driver' => 'daily',
         'path' => storage_path('logs/queue.log'),
         'level' => 'debug',
     ],

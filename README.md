@@ -38,7 +38,7 @@ composer require larawelders/queue-event-logger
 
 The package uses Laravel package discovery, so no manual provider registration is required.
 
-The package registers a default `queue` log channel at runtime if your application does not already define one. By default, it uses a `single` channel that writes to `storage/logs/queue.log`.
+The package registers a default `queue` log channel at runtime if your application does not already define one. By default, it uses a `daily` channel that writes to date-named files under `storage/logs/queue.log`.
 
 If you want to customize the channel name or logger configuration, publish the package config:
 
@@ -52,7 +52,7 @@ The published config lets you change both the channel name and the underlying ch
 'channel' => 'queue',
 
 'channel_config' => [
-    'driver' => 'single',
+    'driver' => 'daily',
     'path' => storage_path('logs/queue.log'),
     'level' => 'debug',
 ],
