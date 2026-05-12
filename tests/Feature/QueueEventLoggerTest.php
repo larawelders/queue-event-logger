@@ -22,6 +22,7 @@ use Illuminate\Queue\Events\WorkerStarting;
 use Illuminate\Queue\Events\WorkerStopping;
 use Illuminate\Queue\WorkerOptions;
 use Illuminate\Support\Facades\Log;
+use Larawelders\QueueEventLogger\QueueEventLoggerSubscriber;
 use Larawelders\QueueEventLogger\Tests\TestCase;
 use Throwable;
 
@@ -58,6 +59,30 @@ class QueueEventLoggerTest extends TestCase
             ],
             config('logging.channels.queue')
         );
+    }
+
+    public function test_it_registers_event_listeners_using_class_callables(): void
+    {
+        $events = new RecordingDispatcher;
+
+        (new QueueEventLoggerSubscriber)->subscribe($events);
+
+        $this->assertSame([
+            [WorkerStarting::class, [QueueEventLoggerSubscriber::class, 'handleWorkerStarting']],
+            [JobProcessing::class, [QueueEventLoggerSubscriber::class, 'handleJobProcessing']],
+            [JobProcessed::class, [QueueEventLoggerSubscriber::class, 'handleJobProcessed']],
+            [JobExceptionOccurred::class, [QueueEventLoggerSubscriber::class, 'handleJobExceptionOccurred']],
+            [Looping::class, [QueueEventLoggerSubscriber::class, 'handleLooping']],
+            [JobFailed::class, [QueueEventLoggerSubscriber::class, 'handleJobFailed']],
+            [WorkerStopping::class, [QueueEventLoggerSubscriber::class, 'handleWorkerStopping']],
+            [JobQueued::class, [QueueEventLoggerSubscriber::class, 'handleJobQueued']],
+            [JobReleasedAfterException::class, [QueueEventLoggerSubscriber::class, 'handleJobReleasedAfterException']],
+            [JobTimedOut::class, [QueueEventLoggerSubscriber::class, 'handleJobTimedOut']],
+            [QueueBusy::class, [QueueEventLoggerSubscriber::class, 'handleQueueBusy']],
+            [QueueFailedOver::class, [QueueEventLoggerSubscriber::class, 'handleQueueFailedOver']],
+            [QueuePaused::class, [QueueEventLoggerSubscriber::class, 'handleQueuePaused']],
+            [QueueResumed::class, [QueueEventLoggerSubscriber::class, 'handleQueueResumed']],
+        ], $events->listeners);
     }
 
     public function test_it_logs_job_processing_event(): void
@@ -323,6 +348,65 @@ class FakeJob implements Job
     public function getRawBody(): string
     {
         return '{}';
+    }
+}
+
+final class RecordingDispatcher implements \Illuminate\Contracts\Events\Dispatcher
+{
+    /**
+     * @var list<array{0: array<mixed>|string|\Closure, 1: array<mixed>|string|\Closure|null}>
+     */
+    public array $listeners = [];
+
+    /**
+     * @param \Closure|string|array<mixed> $events
+     * @param \Closure|string|array<mixed>|null $listener
+     */
+    public function listen($events, $listener = null)
+    {
+        $this->listeners[] = [$events, $listener];
+    }
+
+    public function hasListeners($eventName)
+    {
+        return false;
+    }
+
+    public function subscribe($subscriber)
+    {
+    }
+
+    public function until($event, $payload = [])
+    {
+        return null;
+    }
+
+    /**
+     * @param mixed $payload
+     * @return array<mixed>|null
+     */
+    public function dispatch($event, $payload = [], $halt = false)
+    {
+        return null;
+    }
+
+    /**
+     * @param array<mixed> $payload
+     */
+    public function push($event, $payload = [])
+    {
+    }
+
+    public function flush($event)
+    {
+    }
+
+    public function forget($event)
+    {
+    }
+
+    public function forgetPushed()
+    {
     }
 }
 

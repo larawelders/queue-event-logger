@@ -27,20 +27,20 @@ class QueueEventLoggerSubscriber
 {
     public function subscribe(Dispatcher $events): void
     {
-        $events->listen(WorkerStarting::class, self::class.'@handleWorkerStarting');
-        $events->listen(JobProcessing::class, self::class.'@handleJobProcessing');
-        $events->listen(JobProcessed::class, self::class.'@handleJobProcessed');
-        $events->listen(JobExceptionOccurred::class, self::class.'@handleJobExceptionOccurred');
-        $events->listen(Looping::class, self::class.'@handleLooping');
-        $events->listen(JobFailed::class, self::class.'@handleJobFailed');
-        $events->listen(WorkerStopping::class, self::class.'@handleWorkerStopping');
-        $events->listen(JobQueued::class, self::class.'@handleJobQueued');
-        $events->listen(JobReleasedAfterException::class, self::class.'@handleJobReleasedAfterException');
-        $events->listen(JobTimedOut::class, self::class.'@handleJobTimedOut');
-        $events->listen(QueueBusy::class, self::class.'@handleQueueBusy');
-        $events->listen(QueueFailedOver::class, self::class.'@handleQueueFailedOver');
-        $events->listen(QueuePaused::class, self::class.'@handleQueuePaused');
-        $events->listen(QueueResumed::class, self::class.'@handleQueueResumed');
+        $events->listen(WorkerStarting::class, [static::class, 'handleWorkerStarting']);
+        $events->listen(JobProcessing::class, [static::class, 'handleJobProcessing']);
+        $events->listen(JobProcessed::class, [static::class, 'handleJobProcessed']);
+        $events->listen(JobExceptionOccurred::class, [static::class, 'handleJobExceptionOccurred']);
+        $events->listen(Looping::class, [static::class, 'handleLooping']);
+        $events->listen(JobFailed::class, [static::class, 'handleJobFailed']);
+        $events->listen(WorkerStopping::class, [static::class, 'handleWorkerStopping']);
+        $events->listen(JobQueued::class, [static::class, 'handleJobQueued']);
+        $events->listen(JobReleasedAfterException::class, [static::class, 'handleJobReleasedAfterException']);
+        $events->listen(JobTimedOut::class, [static::class, 'handleJobTimedOut']);
+        $events->listen(QueueBusy::class, [static::class, 'handleQueueBusy']);
+        $events->listen(QueueFailedOver::class, [static::class, 'handleQueueFailedOver']);
+        $events->listen(QueuePaused::class, [static::class, 'handleQueuePaused']);
+        $events->listen(QueueResumed::class, [static::class, 'handleQueueResumed']);
     }
 
     public function handleWorkerStarting(WorkerStarting $event): void
@@ -54,17 +54,17 @@ class QueueEventLoggerSubscriber
 
     public function handleJobProcessing(JobProcessing $event): void
     {
-        $this->logInfo(self::formatJobMessage('Processing job', $event->job));
+        $this->logInfo(static::formatJobMessage('Processing job', $event->job));
     }
 
     public function handleJobProcessed(JobProcessed $event): void
     {
-        $this->logInfo(self::formatJobMessage('Processed job', $event->job));
+        $this->logInfo(static::formatJobMessage('Processed job', $event->job));
     }
 
     public function handleJobExceptionOccurred(JobExceptionOccurred $event): void
     {
-        $this->logError(self::formatExceptionMessage('Uncaught exception', $event->job, $event->exception));
+        $this->logError(static::formatExceptionMessage('Uncaught exception', $event->job, $event->exception));
     }
 
     public function handleLooping(?Looping $event = null): void
@@ -74,7 +74,7 @@ class QueueEventLoggerSubscriber
 
     public function handleJobFailed(JobFailed $event): void
     {
-        $this->logError(self::formatExceptionMessage('Job failed', $event->job, $event->exception));
+        $this->logError(static::formatExceptionMessage('Job failed', $event->job, $event->exception));
     }
 
     public function handleWorkerStopping(?WorkerStopping $event = null): void
@@ -89,8 +89,8 @@ class QueueEventLoggerSubscriber
     {
         $this->logInfo(sprintf(
             '[%s] Queued job %s on queue %s%s',
-            self::formatQueuedJobId($event->id),
-            self::formatQueuedJobName($event->job),
+            static::formatQueuedJobId($event->id),
+            static::formatQueuedJobName($event->job),
             is_string($event->queue) ? $event->queue : 'default',
             is_int($event->delay) ? sprintf(' with delay %d', $event->delay) : ''
         ));
@@ -100,14 +100,14 @@ class QueueEventLoggerSubscriber
     {
         $this->logWarning(sprintf(
             '%s%s',
-            self::formatJobMessage('Released job after exception', $event->job),
+            static::formatJobMessage('Released job after exception', $event->job),
             is_int($event->backoff) ? sprintf(' with backoff %d', $event->backoff) : ''
         ));
     }
 
     public function handleJobTimedOut(JobTimedOut $event): void
     {
-        $this->logError(self::formatJobMessage('Timed out job', $event->job));
+        $this->logError(static::formatJobMessage('Timed out job', $event->job));
     }
 
     public function handleQueueBusy(QueueBusy $event): void
@@ -115,7 +115,7 @@ class QueueEventLoggerSubscriber
         $this->logWarning(sprintf(
             '[worker] Queue %s on connection %s is busy with %d pending jobs',
             $event->queue,
-            self::formatQueueConnection($event, 'connectionName', 'connection'),
+            static::formatQueueConnection($event, 'connectionName', 'connection'),
             $event->size
         ));
     }
@@ -125,7 +125,7 @@ class QueueEventLoggerSubscriber
         $this->logError(sprintf(
             '[worker] Queue failover from connection %s for job %s after %s: %s',
             is_string($event->connectionName) ? $event->connectionName : 'unknown',
-            self::formatQueuedJobName($event->command),
+            static::formatQueuedJobName($event->command),
             get_class($event->exception),
             $event->exception->getMessage()
         ));
@@ -137,7 +137,7 @@ class QueueEventLoggerSubscriber
             '[worker] Paused queue %s on connection %s%s',
             $event->queue,
             $event->connection,
-            self::formatOptionalPauseTtl($event->ttl)
+            static::formatOptionalPauseTtl($event->ttl)
         ));
     }
 
@@ -175,7 +175,7 @@ class QueueEventLoggerSubscriber
         return (string) config('queue-event-logger.channel', 'queue');
     }
 
-    private static function formatJobMessage(string $action, Job $job): string
+    protected static function formatJobMessage(string $action, Job $job): string
     {
         return sprintf(
             '[%s] %s %s',
@@ -185,7 +185,7 @@ class QueueEventLoggerSubscriber
         );
     }
 
-    private static function formatExceptionMessage(string $action, Job $job, \Throwable $exception): string
+    protected static function formatExceptionMessage(string $action, Job $job, \Throwable $exception): string
     {
         return sprintf(
             '[%s] %s %s in job %s: %s',
@@ -197,7 +197,7 @@ class QueueEventLoggerSubscriber
         );
     }
 
-    private static function formatQueuedJobName(mixed $job): string
+    protected static function formatQueuedJobName(mixed $job): string
     {
         if ($job instanceof Closure) {
             return Closure::class;
@@ -210,21 +210,21 @@ class QueueEventLoggerSubscriber
         return (string) $job;
     }
 
-    private static function formatQueuedJobId(mixed $id): string
+    protected static function formatQueuedJobId(mixed $id): string
     {
         return is_string($id) || is_int($id) ? (string) $id : 'pending';
     }
 
-    private static function formatOptionalPauseTtl(mixed $ttl): string
+    protected static function formatOptionalPauseTtl(mixed $ttl): string
     {
         if (! is_int($ttl) && ! $ttl instanceof \DateInterval && ! $ttl instanceof \DateTimeInterface) {
             return '';
         }
 
-        return sprintf(' for %s', self::formatPauseTtl($ttl));
+        return sprintf(' for %s', static::formatPauseTtl($ttl));
     }
 
-    private static function formatPauseTtl(mixed $ttl): string
+    protected static function formatPauseTtl(mixed $ttl): string
     {
         if ($ttl instanceof \DateInterval) {
             return $ttl->format('P%yY%mM%dDT%hH%iM%sS');
@@ -237,7 +237,7 @@ class QueueEventLoggerSubscriber
         return (string) $ttl;
     }
 
-    private static function formatQueueConnection(object $event, string ...$propertyNames): string
+    protected static function formatQueueConnection(object $event, string ...$propertyNames): string
     {
         foreach ($propertyNames as $propertyName) {
             if (property_exists($event, $propertyName) && is_string($event->{$propertyName})) {
